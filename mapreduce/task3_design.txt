@@ -1,0 +1,10 @@
+MapReduce design for the trip ⋈ zone-lookup join (implemented in Spark/DuckDB; this is the MR plan):
+
+1. Trip mapper emits key=PULocationID, value=("T", fare_amount) when fare_amount is non-null and >= 0.
+2. Zone mapper emits key=LocationID, value=("Z", Borough, Zone).
+3. After the shuffle, the reducer for one location id receives every trip fare tagged "T" and the matching zone record tagged "Z".
+4. A reduce-side join would combine those tags, sum fare by Borough+Zone, then a second MapReduce job would order by total_fare descending and Zone ascending and keep the top 5.
+5. Preferred design: do not shuffle 2M trips by location id. Replicate (broadcast) the small taxi_zone_lookup table to every mapper.
+6. Each mapper looks up Borough/Zone locally and emits key=(Borough, Zone), value=fare; the reducer only sums totals.
+7. A final lightweight step selects the five highest totals, breaking ties by Zone name ascending.
+8. Justification: the lookup is tiny; a classic reduce-side join is correct but moves far more data. Spark’s observed BroadcastHashJoin is the same idea.

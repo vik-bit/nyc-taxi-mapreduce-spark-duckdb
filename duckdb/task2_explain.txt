@@ -1,0 +1,94 @@
+=== Query A (all columns) ===
+physical_plan
+┌───────────────────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│          VendorID         │
+│    tpep_pickup_datetime   │
+│   tpep_dropoff_datetime   │
+│      passenger_count      │
+│       trip_distance       │
+│         RatecodeID        │
+│     store_and_fwd_flag    │
+│        PULocationID       │
+│        DOLocationID       │
+│        payment_type       │
+│        fare_amount        │
+│           extra           │
+│          mta_tax          │
+│         tip_amount        │
+│        tolls_amount       │
+│   improvement_surcharge   │
+│        total_amount       │
+│    congestion_surcharge   │
+│        Airport_fee        │
+│     cbd_congestion_fee    │
+│                           │
+│       ~400,000 rows       │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│        READ_PARQUET       │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        PULocationID       │
+│        fare_amount        │
+│          VendorID         │
+│    tpep_pickup_datetime   │
+│   tpep_dropoff_datetime   │
+│      passenger_count      │
+│       trip_distance       │
+│         RatecodeID        │
+│     store_and_fwd_flag    │
+│        DOLocationID       │
+│        payment_type       │
+│           extra           │
+│          mta_tax          │
+│         tip_amount        │
+│        tolls_amount       │
+│   improvement_surcharge   │
+│        total_amount       │
+│    congestion_surcharge   │
+│        Airport_fee        │
+│     cbd_congestion_fee    │
+│                           │
+│          Filters:         │
+│      PULocationID=161     │
+│      fare_amount>30.0     │
+│                           │
+│       ~400,000 rows       │
+└───────────────────────────┘
+
+
+=== Query B (four columns) ===
+physical_plan
+┌───────────────────────────┐
+│         PROJECTION        │
+│    ────────────────────   │
+│    tpep_pickup_datetime   │
+│   tpep_dropoff_datetime   │
+│       trip_distance       │
+│        fare_amount        │
+│                           │
+│       ~400,000 rows       │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│        READ_PARQUET       │
+│    ────────────────────   │
+│         Function:         │
+│        READ_PARQUET       │
+│                           │
+│        Projections:       │
+│        fare_amount        │
+│    tpep_pickup_datetime   │
+│   tpep_dropoff_datetime   │
+│       trip_distance       │
+│                           │
+│          Filters:         │
+│      PULocationID=161     │
+│      fare_amount>30.0     │
+│                           │
+│       ~400,000 rows       │
+└───────────────────────────┘

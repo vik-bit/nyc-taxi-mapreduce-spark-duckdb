@@ -1,0 +1,7 @@
+mrjob==0.7.4
+pyspark==4.2.0
+duckdb==1.5.5
+pandas>=2.2,<3
+pyarrow>=14
+matplotlib>=3.8
+setuptools>=65,<74

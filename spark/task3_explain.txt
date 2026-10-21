@@ -1,0 +1,73 @@
+== Physical Plan ==
+AdaptiveSparkPlan (11)
++- HashAggregate (10)
+   +- Exchange (9)
+      +- HashAggregate (8)
+         +- Project (7)
+            +- BroadcastHashJoin Inner BuildRight (6)
+               :- Filter (2)
+               :  +- Scan parquet  (1)
+               +- BroadcastExchange (5)
+                  +- Filter (4)
+                     +- Scan csv  (3)
+
+
+(1) Scan parquet 
+Output [2]: [PULocationID#7, fare_amount#10]
+Batched: true
+Location: InMemoryFileIndex [file:/C:/Users/vikra/OneDrive/Desktop/Project1_BDA/data/taxi_2m.parquet]
+PushedFilters: [IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), IsNotNull(PULocationID)]
+ReadSchema: struct<PULocationID:int,fare_amount:double>
+
+(2) Filter
+Input [2]: [PULocationID#7, fare_amount#10]
+Condition : ((isnotnull(fare_amount#10) AND (fare_amount#10 >= 0.0)) AND isnotnull(PULocationID#7))
+
+(3) Scan csv 
+Output [3]: [LocationID#37, Borough#38, Zone#39]
+Batched: false
+Location: InMemoryFileIndex [file:/C:/Users/vikra/OneDrive/Desktop/Project1_BDA/data/taxi_zone_lookup.csv]
+PushedFilters: [IsNotNull(LocationID)]
+ReadSchema: struct<LocationID:int,Borough:string,Zone:string>
+
+(4) Filter
+Input [3]: [LocationID#37, Borough#38, Zone#39]
+Condition : isnotnull(LocationID#37)
+
+(5) BroadcastExchange
+Input [3]: [LocationID#37, Borough#38, Zone#39]
+Arguments: HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=54]
+
+(6) BroadcastHashJoin
+Left keys [1]: [PULocationID#7]
+Right keys [1]: [LocationID#37]
+Join type: Inner
+Join condition: None
+
+(7) Project
+Output [3]: [fare_amount#10, Borough#38, Zone#39]
+Input [5]: [PULocationID#7, fare_amount#10, LocationID#37, Borough#38, Zone#39]
+
+(8) HashAggregate
+Input [3]: [fare_amount#10, Borough#38, Zone#39]
+Keys [2]: [Borough#38, Zone#39]
+Functions [1]: [partial_sum(fare_amount#10)]
+Aggregate Attributes [1]: [sum#69]
+Results [3]: [Borough#38, Zone#39, sum#70]
+
+(9) Exchange
+Input [3]: [Borough#38, Zone#39, sum#70]
+Arguments: hashpartitioning(Borough#38, Zone#39, 200), ENSURE_REQUIREMENTS, [plan_id=59]
+
+(10) HashAggregate
+Input [3]: [Borough#38, Zone#39, sum#70]
+Keys [2]: [Borough#38, Zone#39]
+Functions [1]: [sum(fare_amount#10)]
+Aggregate Attributes [1]: [sum(fare_amount#10)#68]
+Results [3]: [Borough#38, Zone#39, sum(fare_amount#10)#68 AS total_fare#43]
+
+(11) AdaptiveSparkPlan
+Output [3]: [Borough#38, Zone#39, total_fare#43]
+Arguments: isFinalPlan=false
+
+

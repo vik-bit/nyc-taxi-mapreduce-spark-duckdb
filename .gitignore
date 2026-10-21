@@ -1,0 +1,49 @@
+# Data (NYC TLC trip files — download locally)
+data/
+*.parquet
+yellow_tripdata*
+
+# Course / private (not part of the public project)
+A1_MT25021/
+A1_*.zip
+ai/
+study_extract/
+_vp_slides/
+report/QUIZ*
+report/VIVA*
+report/viva*
+report/EXAM*
+report/MR_NUMERICALS.md
+report/observations.pdf
+report/observations_draft.md
+report/QUIZ_VIVA_ZERO_TO_READY.md
+scripts/build_observations_pdf.py
+scripts/verify_checklist.py
+scripts/_sanitize_public.py
+
+# Lecture / paper PDFs
+BDA_*.pdf
+Data Streaming*.pdf
+Map-Reduce_paper.pdf
+HDFS-paper.pdf
+taxi_zone_lookup.pdf
+*.docx
+*.pptx
+~$*
+
+# Python / Spark / OS
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+.spark-*
+metastore_db/
+derby.log
+results/mr_*/
+results/mr_out/
+results/mr_*.txt
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.egg-info/
